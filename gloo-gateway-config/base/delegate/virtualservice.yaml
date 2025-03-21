@@ -1,0 +1,25 @@
+---
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: shared-vs
+  namespace: gloo-system
+  labels:
+    routes: delegated
+spec:
+  sslConfig:
+    secretRef:
+      name: gateway-tls
+      namespace: gloo-system
+  virtualHost:
+    domains:
+    - 'bookinfo3.demo.mtritaba.com'
+    routes:
+    - matchers:
+       - prefix: '/' # delegate ownership of all routes for `example.com`
+      delegateAction:
+        selector:
+          labels:
+            domain: 'demo.mtritaba.com'
+          namespaces:
+          - '*'
